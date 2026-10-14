@@ -104,9 +104,13 @@ if uploaded_file is not None:
         if 'category_name' in dim_product.columns:
             merged_cat = fact_transaction.merge(dim_product, on='product_id', how='left')
             cat_share = merged_cat.groupby('category_name')['subtotal'].sum().reset_index()
-            fig_cat = px.bar(cat_share, x='category_name', y['subtotal'] if 'subtotal' in cat_share.columns else 'subtotal', 
-                             title="Omzet Berdasarkan Kategori Produk",
-                             color_discrete_sequence=['#0056b3'])
+            fig_cat = px.bar(
+                cat_share, 
+                x='category_name', 
+                y='subtotal', 
+                title="Omzet Berdasarkan Kategori Produk",
+                color_discrete_sequence=['#0056b3']
+            )
             st.plotly_chart(fig_cat, use_container_width=True)
 
     with col_2:
@@ -114,9 +118,13 @@ if uploaded_file is not None:
         if 'payment_method' in dim_payment.columns:
             merged_pay = fact_transaction.merge(dim_payment, on='payment_id', how='left')
             pay_dist = merged_pay.groupby('payment_method')['order_no'].count().reset_index()
-            fig_pay = px.pie(pay_dist, names='payment_method', values='order_no', 
-                             title="Proporsi Kanal Pembayaran Konsumen",
-                             color_discrete_sequence=px.colors.sequential.Blues_r)
+            fig_pay = px.pie(
+                pay_dist, 
+                names='payment_method', 
+                values='order_no', 
+                title="Proporsi Kanal Pembayaran Konsumen",
+                color_discrete_sequence=px.colors.sequential.Blues_r
+            )
             st.plotly_chart(fig_pay, use_container_width=True)
 
     # -----------------------------------------------------------------------------
@@ -137,10 +145,14 @@ if uploaded_file is not None:
         b, a = np.polyfit(X, Y, 1)
         monthly_sales['Linear_Trend'] = a + b * X
         
-        fig_reg = px.line(monthly_sales, x='month_period', y=['subtotal', 'Linear_Trend'],
-                           labels={'value': 'Nominal (Rp)', 'month_period': 'Bulan'},
-                           title="Kurva Tren Penjualan Aktual vs Regresi Linear",
-                           color_discrete_map={'subtotal': '#0056b3', 'Linear_Trend': '#ff7f0e'})
+        fig_reg = px.line(
+            monthly_sales, 
+            x='month_period', 
+            y=['subtotal', 'Linear_Trend'],
+            labels={'value': 'Nominal (Rp)', 'month_period': 'Bulan'},
+            title="Kurva Tren Penjualan Aktual vs Regresi Linear",
+            color_discrete_map={'subtotal': '#0056b3', 'Linear_Trend': '#ff7f0e'}
+        )
         st.plotly_chart(fig_reg, use_container_width=True)
         
         st.success(f"Persamaan Garis Tren: **Y = {a:,.0f} + {b:,.0f}X** (Rata-rata pertumbuhan omzet Rp {b:,.0f} per bulan).")
@@ -149,4 +161,3 @@ if uploaded_file is not None:
 
 else:
     st.info("👈 Silakan unggah file Excel/CSV data POS Cooler City melalui panel sidebar di sebelah kiri untuk memulai sistem.")
-    
