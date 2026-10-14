@@ -149,3 +149,4 @@ if uploaded_file is not None:
 
 else:
     st.info("👈 Silakan unggah file Excel/CSV data POS Cooler City melalui panel sidebar di sebelah kiri untuk memulai sistem.")
+    
