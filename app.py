@@ -52,9 +52,9 @@ st.markdown("---")
 # Proses Apriori
 @st.cache_data
 def run_apriori(data, min_support, min_confidence):
-    # Buat One-Hot Encoding berdasarkan order_no dan product_name
+    # Buat One-Hot Encoding berdasarkan order_no dan product_name (Menggunakan .map untuk pandas terbaru)
     basket = data.groupby(['order_no', 'product_name'])['quantity'].count().unstack().fillna(0)
-    basket_encoded = basket.applymap(lambda x: 1 if x > 0 else 0)
+    basket_encoded = basket.map(lambda x: 1 if x > 0 else 0)
     
     # Jalankan Apriori
     frequent_itemsets = apriori(basket_encoded, min_support=min_support, use_colnames=True)
@@ -74,7 +74,6 @@ with tab1:
     st.subheader("Daftar Kombinasi Produk Sering Dibeli (Frequent Itemsets)")
     if not frequent_itemsets.empty:
         fi_sorted = frequent_itemsets.sort_values(by='support', ascending=False)
-        # Convert frozenset to string for better display
         fi_sorted['itemsets'] = fi_sorted['itemsets'].apply(lambda x: ', '.join(list(x)))
         st.dataframe(fi_sorted.reset_index(drop=True), use_container_width=True)
     else:
@@ -116,6 +115,5 @@ with tab3:
     else:
         st.info("Visualisasi akan muncul setelah aturan asosiasi berhasil dihasilkan.")
 
-# Footer
 st.markdown("---")
 st.markdown("<p style='text-align: center;'>Cooler City Business Intelligence Dashboard | Powered by Streamlit & Apriori</p>", unsafe_allow_html=True)
